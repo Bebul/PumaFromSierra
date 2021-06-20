@@ -8,4 +8,6 @@ There are 20 (as default) tornable leaves for little children who are not able t
 Pumas are other adults or children marked as dangerous Pumas, who are able to touch the child which forces him to go HOME to get another life, or something.
 Variants are simple to find.
 
+You can use this link, but wait a little, until all images and stuff is loaded: https://bebul.github.io/PumaFromSierra/
+
 ![example](example.jpg)
