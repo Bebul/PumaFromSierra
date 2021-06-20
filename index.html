@@ -9,6 +9,8 @@
 
     <script>
       function enableInput() {
+        let deleteMeEl = document.getElementById("deleteMe")
+        deleteMeEl.parentNode.removeChild(deleteMeEl)
         let riddleEl = document.getElementById("inputDialog")
         riddleEl.style.visibility = "visible"
       }
@@ -16,6 +18,10 @@
 </head>
 
 <body style="position:absolute" onload="enableInput()">
+
+<div>
+    <div id="deleteMe" style="font-size: 50px">Loading pictures, please wait!</div>
+</div>
 
 <div id="inputDialog" style="visibility: hidden; font-size: 40px">
     <form>
