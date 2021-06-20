@@ -3,76 +3,9 @@ var GLOB = {
   canvasHeight: 1485,
   tornX: 1050 * 2.0 / 3.0,
   netStyleDash: [1, 1],
-}
-
-function drawCardNet(cardInfo, ctx) {
-  function drawVerticals() {
-    let x0 = cardInfo.x
-    let y0 = cardInfo.y
-    let y1 = cardInfo.y + 1.5 * cardInfo.width // note, we want it Squarish
-    let xShift = cardInfo.width / 2
-    for (x = 1; x < 2; x++) {
-      ctx.beginPath();
-      ctx.setLineDash(GLOB.netStyleDash);
-      ctx.moveTo(x0 + x * xShift, y0);
-      ctx.lineTo(x0 + x * xShift, y1);
-      ctx.stroke();
-    }
-  }
-  function drawHorizontals() {
-    let x0 = cardInfo.x
-    let y0 = cardInfo.y
-    let x1 = cardInfo.x + cardInfo.width
-    let yShift = cardInfo.width / 2  // note, the same as in vertical, to make it squarish
-    for (y = 1; y<=2; y++) {
-      ctx.beginPath();
-      ctx.setLineDash(GLOB.netStyleDash);
-      ctx.moveTo(x0, y0 + y * yShift);
-      ctx.lineTo(x1, y0 + y * yShift);
-      ctx.stroke();
-    }
-  }
-  drawVerticals()
-  drawHorizontals()
-}
-
-// draw given letter on the n-th order, so for n=0..3 it is at the first row, 4..7 second and 8..11 third row
-function drawCard(letter, n, ctx) {
-  let x = n % 4
-  let y = Math.floor(n / 4) % 3
-  let expCardWidth = 0.8 * GLOB.cardWidth
-  let offset = (GLOB.cardWidth - expCardWidth) / 2
-  let cardInfo = {
-    x: x * GLOB.cardWidth + offset,
-    y: y * GLOB.cardHeight + offset,
-    width: expCardWidth
-  }
-  var img = document.getElementById("img-background");
-  ctx.drawImage(img, x * GLOB.cardWidth, y * GLOB.cardHeight, GLOB.cardWidth, GLOB.cardHeight);
-  drawCardNet(cardInfo, ctx)
-
-  // draw Black Circles
-  let squareSize = cardInfo.width / 2
-  let braileAr = GLOB.braille[letter]
-  if (braileAr) {
-    for (row = 0; row < 3; row++)
-      for (col = 0; col < 2; col++) {
-        // console.log("would like to draw dot for letter " + letter + " at row: " + row +" and col:" + col)
-        if (braileAr[2 * row + col]==="o") {
-          ctx.beginPath();
-          ctx.arc(cardInfo.x + (col + 0.5) * squareSize, cardInfo.y + (row + 0.5) * squareSize, 0.8 * (squareSize / 2) , 0, 2 * Math.PI, false);
-          ctx.fill();
-          ctx.stroke();
-        }
-      }
-  }
-
-  // write the Letter below the dots
-  var canvas = document.getElementById("myCanvas");
-  ctx.font = "140px Arial";
-  let letterInfo = ctx.measureText(letter)
-  let heightLeft = GLOB.cardHeight - (cardInfo.y + 1.5 * cardInfo.width)
-  ctx.fillText(letter, (x + 0.5) * GLOB.cardWidth - letterInfo.width / 2, (y + 1) * GLOB.cardHeight - 140 / 5 );
+  tornNumber: 20, // 22 still good, but your hands would suffer while using scisors
+  tornFont: "55px Arial",
+  pictures: []
 }
 
 function drawPumaNet(ctx) {
@@ -85,8 +18,8 @@ function drawPumaNet(ctx) {
   ctx.lineTo(x0, GLOB.canvasHeight)
   ctx.stroke()
 
-  let yShift = GLOB.canvasHeight / 20
-  for (let y = 1; y < 20; y++) {
+  let yShift = GLOB.canvasHeight / GLOB.tornNumber
+  for (let y = 1; y < GLOB.tornNumber; y++) {
     ctx.beginPath();
     ctx.moveTo(x0, y * yShift)
     ctx.lineTo(GLOB.canvasWidth, y * yShift)
@@ -118,35 +51,85 @@ function createCanvas(n) {
 function drawTornLetters(ctx, text, n) {
   let letterText = `${n+1} - ${text[n]}`
 
-  ctx.font = "55px Arial";
+  ctx.font = GLOB.tornFont;
   let letterInfo = ctx.measureText(letterText)
   let xShift = 0.75 * ((GLOB.canvasWidth - GLOB.tornX) - letterInfo.width)
-  let yShift = GLOB.canvasHeight / 20
-  for (let i = 0; i < 20; i++) {
-    let y = (i+1) * yShift - 10
+  let yShift = GLOB.canvasHeight / GLOB.tornNumber
+  for (let i = 0; i < GLOB.tornNumber; i++) {
+    let y = (i+1) * yShift - GLOB.tornNumber / 2
     ctx.fillText(letterText, GLOB.tornX + xShift,  y);
   }
 }
 
-function drawCentralLetter(ctx, text, n) {
+function drawCentralLetterAndPictures(ctx, text, n) {
   let letterText = `${n+1}.${text[n]}`
-  ctx.font = "350px Arial";
+  ctx.font = "480px Stint";
   let letterInfo = ctx.measureText(letterText)
   let x = 0.5 * (GLOB.canvasHeight - letterInfo.width)
-  ctx.fillText(letterText, x - GLOB.canvasHeight, GLOB.canvasWidth * 0.6);
+  ctx.fillText(letterText, x - GLOB.canvasHeight, GLOB.canvasWidth * 0.6)
+
+  // and two images
+  let rnd1 = Math.floor(Math.random() * GLOB.pictures.length)
+  let rnd2 = (rnd1 + 1 + Math.floor(Math.random() * (GLOB.pictures.length - 1))) % GLOB.pictures.length  // so it is different to left image
+
+  let availableWidth = 0.8 * (0.5 * (GLOB.canvasHeight - letterInfo.width)) // 80%
+  let availableHeight = 0.7 * (2 * GLOB.canvasWidth / 3)
+
+  // draw left image
+  let left = GLOB.pictures[rnd1]
+  let leftWidth = left.naturalWidth
+  let leftHeight = left.naturalHeight
+  let ratio1 = Math.min(availableWidth / leftWidth, 1.25) // 1.25x resize max
+  ctx.drawImage(left, 40-GLOB.canvasHeight, GLOB.canvasWidth * 0.666 - left.naturalHeight * ratio1, leftWidth * ratio1, leftHeight * ratio1)
+
+  // draw right image
+  let right = GLOB.pictures[rnd2]
+  let rightWidth = right.naturalWidth
+  let rightHeight = right.naturalHeight
+  let ratio2 = Math.min(availableWidth / rightWidth, 1.25) // 1.25x resize max
+  ctx.drawImage(right, -rightWidth * ratio2 - 40, GLOB.canvasWidth * 0.666 - right.naturalHeight * ratio2, rightWidth * ratio2, rightHeight * ratio2)
 }
 
 function drawPumaPage(ctx, text, n) {
   drawPumaNet(ctx)
   drawTornLetters(ctx, text, n)
   ctx.rotate(-Math.PI / 2); // BEWARE!!!
-  drawCentralLetter(ctx, text, n)
+  drawCentralLetterAndPictures(ctx, text, n)
+}
+/*
+    <img src="img/dynamitTon2.png"/>
+    <img src="img/HeraldMiserablesTON.png"/>
+    <img src="img/HeraldSenkyrkaTON.png"/>
+    <img src="img/indian.png"/>
+    <img src="img/odpalovac-blesku3.png"/>
+    <img src="img/sochaSerif2TON.png"/>
+    <img src="img/sombrero.png"/>
+    <img src="img/typy.png"/>
+    <img src="img/westernPistol.png"/>
+    <img src="img/westernPistolLeft.png"/>
+*/
+
+function preparePictures() {
+  let picturesEl = document.getElementById("pictures")
+  for (let i=0; i < picturesEl.childNodes.length; i++) {
+    let node = picturesEl.childNodes[i]
+    let src = node.src
+    if (src) {
+      console.log(`picture detected: [${node.naturalWidth},${node.naturalHeight}] ${src}`)
+      GLOB.pictures.push(node)
+    }
+  }
 }
 
 function drawPumaPages(text) {
   // for each letter in the text, create a Puma page
   // first - create canvases
   let canvases = document.getElementById("canvases")
+
+  // prepare pictures
+  preparePictures()
+
+  // draw pages
   for (let i = 0; i < text.length; i++) {
     let canvasEl = createCanvas(i+1)
     canvases.appendChild(canvasEl)
