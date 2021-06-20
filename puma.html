@@ -1,0 +1,44 @@
+<html xml:lang="cs" xmlns="http://www.w3.org/1999/xhtml" lang="cs">
+<head>
+    <title>Fort Mills Braille A-L</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="style/layout.css"/>
+    <link rel="stylesheet" type="text/css" media="print" href="style/layout.css"/>
+
+    <script type="text/javascript" src="js/drawPuma.js"></script>
+
+    <script>
+      function drawIt() {
+        var canvas = document.getElementById("myCanvas")
+        drawPage("ABCDEFGHIJKL".split(""), canvas)
+        var canvas2 = document.getElementById("myCanvas2")
+        drawPage("MNOPQRSTUVWX".split(""), canvas2)
+      }
+      function enableInput() {
+        let riddleEl = document.getElementById("inputDialog")
+        riddleEl.style.visibility = "visible"
+      }
+    </script>
+</head>
+
+<body style="position:absolute" onload="enableInput()">
+
+<div id="inputDialog" style="visibility: hidden; font-size: 40px">
+    <form>
+        Zadejte hádanku:
+        <br>
+        <input id="riddle" type="text" name="fname" size="80" value="Stojí víla celá bílá, jenom vlasy zelené.">
+        <br>
+        <input type="button" value="OK" id="submit" name="submit" onclick="extractInputAndDrawPumas()"/>
+    </form>
+</div>
+
+<div style="visibility: hidden">
+<img id="img-background" src="background.png" width="262px" height="494px">
+</div>
+
+<div id="canvases" style="position:absolute; left:0px; top:0px">
+</div>
+</body>
+
+</html>
