@@ -1,37 +1,8 @@
 var GLOB = {
   canvasWidth: 1050,
   canvasHeight: 1485,
-  cardWidth: 1050/4,
-  cardHeight: 1485/3,
-  netStyleDash: [5, 15],
-  braille: {
-    A : "o     ",
-    B : "o o   ",
-    C : "oo    ",
-    D : "oo o  ",
-    E : "o  o  ",
-    F : "ooo   ",
-    G : "oooo  ",
-    H : "o oo  ",
-    I : " oo   ",
-    J : " ooo  ",
-    K : "o   o ",
-    L : "o o o ",
-    M : "oo  o ",
-    N : "oo oo ",
-    O : "o  oo ",
-    P : "ooo o ",
-    Q : "ooooo ",
-    R : "o ooo ",
-    S : " oo o ",
-    T : " oooo ",
-    U : "o   oo",
-    V : "o o oo",
-    W : " ooo o",
-    X : "oo  oo",
-    Y : "oo ooo",
-    Z : "o  ooo"
-  }
+  tornX: 1050 * 2.0 / 3.0,
+  netStyleDash: [1, 1],
 }
 
 function drawCardNet(cardInfo, ctx) {
@@ -104,48 +75,23 @@ function drawCard(letter, n, ctx) {
   ctx.fillText(letter, (x + 0.5) * GLOB.cardWidth - letterInfo.width / 2, (y + 1) * GLOB.cardHeight - 140 / 5 );
 }
 
-function drawCardFront(n, ctx) {
-  let x = n % 4
-  let y = Math.floor(n / 4) % 3
-  var img = document.getElementById("img-foreground");
-  ctx.drawImage(img, x * GLOB.cardWidth, y * GLOB.cardHeight, GLOB.cardWidth, GLOB.cardHeight);
-}
-
-function drawCards(letters, ctx) {
-  for (i = 0; i< letters.length; i++) {
-    drawCard(letters[i], i, ctx)
-  }
-}
-
-function drawNet(ctx) {
-  function drawVerticals() {
-    let x0 = 0
-    let y0 = 0
-    let y1 = GLOB.canvasHeight
-    let xShift = GLOB.canvasWidth / 4
-    for (x = 0; x<=4; x++) {
-      ctx.beginPath();
-      ctx.moveTo(x0 + x * xShift, y0);
-      ctx.lineTo(x0 + x * xShift, y1);
-      ctx.stroke();
-    }
-  }
-  function drawHorizontals() {
-    let x0 = 0
-    let y0 = 0
-    let x1 = GLOB.canvasWidth
-    let yShift = GLOB.canvasHeight / 3  // note, the same as in vertical, to make it squarish
-    for (y = 0; y<=3; y++) {
-      ctx.beginPath();
-      ctx.moveTo(x0, y0 + y * yShift);
-      ctx.lineTo(x1, y0 + y * yShift);
-      ctx.stroke();
-    }
-  }
-  ctx.setLineDash([]);
+function drawPumaNet(ctx) {
+  ctx.setLineDash(GLOB.netStyleDash);
   ctx.lineWidth = 1;
-  drawVerticals()
-  drawHorizontals()
+
+  let x0 = GLOB.tornX
+  ctx.beginPath();
+  ctx.moveTo(x0, 0)
+  ctx.lineTo(x0, GLOB.canvasHeight)
+  ctx.stroke()
+
+  let yShift = GLOB.canvasHeight / 20
+  for (let y = 1; y < 20; y++) {
+    ctx.beginPath();
+    ctx.moveTo(x0, y * yShift)
+    ctx.lineTo(GLOB.canvasWidth, y * yShift)
+    ctx.stroke()
+  }
 }
 
 function drawPage(letters, canvas) {
@@ -169,6 +115,24 @@ function createCanvas(n) {
   return canvasEl
 }
 
+function drawTornLetters(ctx, text, n) {
+  let letterText = `${n+1} - ${text[n]}`
+
+  ctx.font = "55px Arial";
+  let letterInfo = ctx.measureText(letterText)
+  let xShift = 0.75 * ((GLOB.canvasWidth - GLOB.tornX) - letterInfo.width)
+  let yShift = GLOB.canvasHeight / 20
+  for (let i = 0; i < 20; i++) {
+    let y = (i+1) * yShift - 10
+    ctx.fillText(letterText, GLOB.tornX + xShift,  y);
+  }
+}
+
+function drawPumaPage(ctx, text, n) {
+  drawPumaNet(ctx)
+  drawTornLetters(ctx, text, n)
+}
+
 function drawPumaPages(text) {
   // for each letter in the text, create a Puma page
   // first - create canvases
@@ -176,7 +140,8 @@ function drawPumaPages(text) {
   for (let i = 0; i < text.length; i++) {
     let canvasEl = createCanvas(i+1)
     canvases.appendChild(canvasEl)
-    drawPage(text[i], canvasEl)
+    let ctx = canvasEl.getContext("2d")
+    drawPumaPage(ctx, text, i)
   }
 }
 
