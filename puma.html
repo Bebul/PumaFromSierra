@@ -8,12 +8,6 @@
     <script type="text/javascript" src="js/drawPuma.js"></script>
 
     <script>
-      function drawIt() {
-        var canvas = document.getElementById("myCanvas")
-        drawPage("ABCDEFGHIJKL".split(""), canvas)
-        var canvas2 = document.getElementById("myCanvas2")
-        drawPage("MNOPQRSTUVWX".split(""), canvas2)
-      }
       function enableInput() {
         let riddleEl = document.getElementById("inputDialog")
         riddleEl.style.visibility = "visible"
@@ -33,8 +27,17 @@
     </form>
 </div>
 
-<div style="visibility: hidden">
-<img id="img-background" src="background.png" width="262px" height="494px">
+<div id="pictures" style="visibility: hidden">
+    <img src="img/dynamitTon2.png"/>
+    <img src="img/HeraldMiserablesTON.png"/>
+    <img src="img/HeraldSenkyrkaTON.png"/>
+    <img src="img/indian.png"/>
+    <img src="img/odpalovac-blesku3.png"/>
+    <img src="img/sochaSerif2TON.png"/>
+    <img src="img/sombrero.png"/>
+    <img src="img/typy.png"/>
+    <img src="img/westernPistol.png"/>
+    <img src="img/westernPistolLeft.png"/>
 </div>
 
 <div id="canvases" style="position:absolute; left:0px; top:0px">

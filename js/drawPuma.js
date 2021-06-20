@@ -128,9 +128,19 @@ function drawTornLetters(ctx, text, n) {
   }
 }
 
+function drawCentralLetter(ctx, text, n) {
+  let letterText = `${n+1}.${text[n]}`
+  ctx.font = "350px Arial";
+  let letterInfo = ctx.measureText(letterText)
+  let x = 0.5 * (GLOB.canvasHeight - letterInfo.width)
+  ctx.fillText(letterText, x - GLOB.canvasHeight, GLOB.canvasWidth * 0.6);
+}
+
 function drawPumaPage(ctx, text, n) {
   drawPumaNet(ctx)
   drawTornLetters(ctx, text, n)
+  ctx.rotate(-Math.PI / 2); // BEWARE!!!
+  drawCentralLetter(ctx, text, n)
 }
 
 function drawPumaPages(text) {
