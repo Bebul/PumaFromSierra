@@ -96,18 +96,6 @@ function drawPumaPage(ctx, text, n) {
   ctx.rotate(-Math.PI / 2); // BEWARE!!!
   drawCentralLetterAndPictures(ctx, text, n)
 }
-/*
-    <img src="img/dynamitTon2.png"/>
-    <img src="img/HeraldMiserablesTON.png"/>
-    <img src="img/HeraldSenkyrkaTON.png"/>
-    <img src="img/indian.png"/>
-    <img src="img/odpalovac-blesku3.png"/>
-    <img src="img/sochaSerif2TON.png"/>
-    <img src="img/sombrero.png"/>
-    <img src="img/typy.png"/>
-    <img src="img/westernPistol.png"/>
-    <img src="img/westernPistolLeft.png"/>
-*/
 
 function preparePictures() {
   let picturesEl = document.getElementById("pictures")
@@ -115,7 +103,7 @@ function preparePictures() {
     let node = picturesEl.childNodes[i]
     let src = node.src
     if (src) {
-      console.log(`picture detected: [${node.naturalWidth},${node.naturalHeight}] ${src}`)
+      //console.log(`picture detected: [${node.naturalWidth},${node.naturalHeight}] ${src}`)
       GLOB.pictures.push(node)
     }
   }
