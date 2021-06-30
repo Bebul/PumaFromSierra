@@ -90,7 +90,13 @@ function drawCentralLetterAndPictures(ctx, text, n) {
   ctx.drawImage(right, -rightWidth * ratio2 - 40, GLOB.canvasWidth * 0.666 - right.naturalHeight * ratio2, rightWidth * ratio2, rightHeight * ratio2)
 }
 
+function drawParchment(ctx) {
+  let parchment = document.getElementById("parchment")
+  ctx.drawImage(parchment, 0, 0)
+}
+
 function drawPumaPage(ctx, text, n) {
+  drawParchment(ctx)
   drawPumaNet(ctx)
   drawTornLetters(ctx, text, n)
   ctx.rotate(-Math.PI / 2); // BEWARE!!!
